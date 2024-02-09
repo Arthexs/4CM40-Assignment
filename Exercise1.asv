@@ -1,0 +1,36 @@
+clear, clc, close all
+
+%% Parameter definition
+A = 1;
+g = 9.8;
+Av = 0.001;
+rho = 980;
+K = 0.01;
+phi_o_star = 0.001;
+
+StopTime = 20000;
+TimeStep = 1;
+
+phi_o = [0:TimeStep:StopTime;phi_o_star*ones(1,StopTime+1)];
+
+% phi_o_star*ones(2000/TimeStep,1),...
+    % phi_o_star/2*ones(10000,1),phi_o_star*ones(StopTime-10000+1,1)];
+
+%% Run model
+model = 'Model1.slx';
+load_system(model);
+SimOut = sim(model,'StopTime',num2str(StopTime),'FixedStep',num2str(TimeStep));
+
+%% Plotting
+figure, 
+subplot(2,2,1)
+plot(SimOut.phi_i.Time,SimOut.phi_i.Data)
+
+subplot(2,2,2)
+plot(SimOut.h.Time,SimOut.h.Data)
+
+subplot(2,2,3)
+plot(SimOut.phi_o.Time,SimOut.phi_o.Data)
+
+subplot(2,2,4)
+plot(SimOut.p.Time,SimOut.p.Data)
