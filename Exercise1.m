@@ -67,22 +67,17 @@ function array = generate_array(stoptime, stepsize, Av_star, Av_disturbance)
     period_length = 6000/stepsize;
     total_vals = stoptime*stepsize;
     full_periods = total_vals/period_length;
+
     for i = 1:length(array)
-        if i < period_cut_off
+        if i <= 1000/stepsize
             continue
         end
-        if 
+        if mod(i-1000/stepsize,period_length) <= period_cut_off
+            array(i) = array(i) + Av_disturbance;
+            continue
+        end
+        array(i) = array(i) - Av_disturbance;
     end
 
-
-    % Determine the start index of the periodic signal
-    start_index_periodic_signal = find(time >= 1000, 1);
-
-    % Generate the periodic block-pulse signal
-    for i = 1:period_length:numel(time)
-        end_index = min(i+period_length-1, numel(time));
-        array(start_index_periodic_signal:end_index) = ...
-            Av_star + Av_disturbance * mod(i, 2) - Av_disturbance * (1 - mod(i, 2));
-    end
 end
 
