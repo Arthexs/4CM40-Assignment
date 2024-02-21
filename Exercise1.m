@@ -65,8 +65,6 @@ function array = generate_array(stoptime, stepsize, Av_star, Av_disturbance)
 
     % Determine the period length for the periodic signal
     period_length = 6000/stepsize;
-    total_vals = stoptime*stepsize;
-    full_periods = total_vals/period_length;
 
     for i = 1:length(array)
         if i <= 1000/stepsize
