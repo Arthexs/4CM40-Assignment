@@ -2,6 +2,7 @@ clear, clc, close all
 
 %% Parameter definition
 A = 1;
+A_slope = 1/4;
 g = 9.8;
 Av_star = 0.001;
 rho = 980;
