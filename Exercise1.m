@@ -14,19 +14,16 @@ TimeStep = 1;
 
 Time = (0:TimeStep:StopTime)';
 
-% phi_i.time = (0:TimeStep:StopTime)';
 phi_i_in = [phi_o_star*ones(1,2000/TimeStep),...
     phi_o_star/2*ones(1,10000/TimeStep),phi_o_star*ones(1,StopTime/TimeStep-12000/TimeStep+1)]';
 phi_i = timeseries(phi_i_in);
 
-% Av.time = (0:TimeStep:StopTime)';
 Av_in = generate_array(StopTime, TimeStep, Av_star, Av_disturbance);
 Av = timeseries(Av_in);
 
 %% Run model
 model = 'Model1.slx';
 load_system(model);
-set_param(bdroot,'SimulationCommand','Update')
 SimOut = sim(model,'StopTime',num2str(StopTime),'FixedStep',num2str(TimeStep));
 
 %% Plotting
@@ -123,19 +120,19 @@ xlabel('Time [s]')
 ylabel('Volumetric flow [m^3/s]')
 
 subplot(2,2,2)
-plot(SimOut.y.Time,SimOut.y.Data(3,:)+SimOut.h.Data)
+plot(SimOut.y.Time,SimOut.y.Data(3,:)+SimOut.h.Data')
 title('Height over time')
 xlabel('Time [s]')
 ylabel('Height [m]')
 
 subplot(2,2,3)
-plot(SimOut.y.Time,SimOut.y.Data(2,:)+SimOut.phi_o.Data)
+plot(SimOut.y.Time,SimOut.y.Data(2,:)+SimOut.phi_o.Data')
 title('Outflow over time')
 xlabel('Time [s]')
 ylabel('Volumetric flow [m^3/s]')
 
 subplot(2,2,4)
-plot(SimOut.y.Time,SimOut.y.Data(1,:)+SimOut.p.Data)
+plot(SimOut.y.Time,SimOut.y.Data(1,:)+SimOut.p.Data')
 title('Pressure over time')
 xlabel('Time [s]')
 ylabel('Pressure [Pa]')
