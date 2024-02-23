@@ -12,12 +12,16 @@ Av_disturbance = 10^(-5);
 StopTime = 20000;
 TimeStep = 1;
 
-phi_i.time = (0:TimeStep:StopTime)';
-phi_i.signals.values = [phi_o_star*ones(1,2000/TimeStep),...
-    phi_o_star/2*ones(1,10000/TimeStep),phi_o_star*ones(1,StopTime/TimeStep-12000/TimeStep+1)]';
+Time = (0:TimeStep:StopTime)';
 
-Av.time = (0:TimeStep:StopTime)';
-Av.signals.values = generate_array(StopTime, TimeStep, Av_star, Av_disturbance);
+% phi_i.time = (0:TimeStep:StopTime)';
+phi_i_in = [phi_o_star*ones(1,2000/TimeStep),...
+    phi_o_star/2*ones(1,10000/TimeStep),phi_o_star*ones(1,StopTime/TimeStep-12000/TimeStep+1)]';
+phi_i = timeseries(phi_i_in);
+
+% Av.time = (0:TimeStep:StopTime)';
+Av_in = generate_array(StopTime, TimeStep, Av_star, Av_disturbance);
+Av = timeseries(Av_in);
 
 %% Run model
 model = 'Model1.slx';
@@ -30,7 +34,7 @@ SimOut = sim(model,'StopTime',num2str(StopTime),'FixedStep',num2str(TimeStep));
 figure, 
 sgtitle('The non-linear no disturbance model')
 subplot(2,2,1)
-plot(SimOut.phi_i.Time,SimOut.phi_i.Data)
+plot(Time,phi_i_in)
 title('Inflow over time')
 xlabel('Time [s]')
 ylabel('Volumetric flow [m^3/s]')
@@ -57,7 +61,7 @@ ylabel('Pressure [Pa]')
 figure, 
 sgtitle('The non-linear with disturbance model')
 subplot(2,2,1)
-plot(SimOut.phi_i1.Time,SimOut.phi_i1.Data)
+plot(Time,phi_i_in)
 title('Inflow over time')
 xlabel('Time [s]')
 ylabel('Volumetric flow [m^3/s]')
@@ -80,13 +84,13 @@ title('Pressure over time')
 xlabel('Time [s]')
 ylabel('Pressure [Pa]')
 
-% Linearized model
+% Linearized delta model
 % x = m, y = [p;phi_o;h]
 
 figure, 
 sgtitle('The linear model')
 subplot(2,2,1)
-plot(SimOut.phi_i1.Time,SimOut.phi_i1.Data)
+plot(Time,phi_i_in)
 title('Inflow over time')
 xlabel('Time [s]')
 ylabel('Volumetric flow [m^3/s]')
@@ -108,6 +112,34 @@ plot(SimOut.y.Time,SimOut.y.Data(1,:))
 title('Pressure over time')
 xlabel('Time [s]')
 ylabel('Pressure [Pa]')
+
+% Linear model 
+figure, 
+sgtitle('The linear model')
+subplot(2,2,1)
+plot(Time,phi_i_in)
+title('Inflow over time')
+xlabel('Time [s]')
+ylabel('Volumetric flow [m^3/s]')
+
+subplot(2,2,2)
+plot(SimOut.y.Time,SimOut.y.Data(3,:)+SimOut.h.Data)
+title('Height over time')
+xlabel('Time [s]')
+ylabel('Height [m]')
+
+subplot(2,2,3)
+plot(SimOut.y.Time,SimOut.y.Data(2,:)+SimOut.phi_o.Data)
+title('Outflow over time')
+xlabel('Time [s]')
+ylabel('Volumetric flow [m^3/s]')
+
+subplot(2,2,4)
+plot(SimOut.y.Time,SimOut.y.Data(1,:)+SimOut.p.Data)
+title('Pressure over time')
+xlabel('Time [s]')
+ylabel('Pressure [Pa]')
+
 
 %% Functions
 % Needs fixing
