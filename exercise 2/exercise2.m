@@ -20,6 +20,11 @@ stepsize = 0.0001;
 figure
 hold on
 for i = 0:1
+     if (i == 0)
+          fprintf("no backflow case:\n")
+     else
+          fprintf("backflow case:\n")
+     end
      f = [0, 0.3, 0.3, 0.1, 0.1, 0.1, 0] * i;
      
      forward = (f(2:N+1)+1)*v*N/L;
@@ -30,18 +35,26 @@ for i = 0:1
           0, forward(2), -forward(3)-backward(3), backward(4), 0, 0;
           0, 0, forward(3), -forward(4)-backward(4), backward(5), 0;
           0, 0, 0, forward(4), -forward(5)-backward(5), backward(6);
-          0, 0, 0, 0, forward(5), -forward(6)-backward(6), ]
+          0, 0, 0, 0, forward(5), -forward(6)-backward(6), ];
 
      [t,c] = ode45(@(t,x) func(t,x,A,in,stepsize,start), start:stepsize:finish,zeros(size(x)));
      y = c*out;
-     trapz(y,t);
+     %normalize area
+     y = y / trapz(t,y,1);
      m_1 = 0;
-     for i = 1:length(y)
-          m_1 = m_1 + t(i)*y(i)*stepsize;
+     for j = 1:length(y)
+          m_1 = m_1 + t(j)*y(j)*stepsize;
      end
-     y = y / m_1;
-     
+     fprintf("area = " + trapz(t,y,1) + ", m_1 = " + m_1)
      plot(t,y);
+
+     mu = zeros(size(1:3));
+     for j = 1:3
+          for k = 1:length(y)
+               mu(j) = mu(j) + ((t(k)-m_1)^j)*y(k)*stepsize;
+          end
+     end
+     mu
      
 end
 xlabel("time(s)")
