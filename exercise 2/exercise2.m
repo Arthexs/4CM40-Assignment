@@ -60,12 +60,12 @@ for i = 0:1
      
      %d)
      %check positive definite:
-     flow_mat = [forward(1)+backward(1), -backward(2), 0, 0, 0, 0;
-                 -forward(1), forward(2)+backward(2), -backward(3), 0, 0, 0;
-                 0, -forward(2), forward(3)+backward(3), -backward(4), 0, 0;
-                 0, 0, -forward(3), forward(4)+backward(4), -backward(5), 0;
-                 0, 0, 0, -forward(4), forward(5)+backward(5), -backward(6);
-                 0, 0, 0, 0, -forward(5), forward(6)+backward(6), ]
+     flow_mat = [forward(1)+backward(1), -forward(1), 0, 0, 0, 0;
+                 -backward(2), forward(2)+backward(2), -forward(2), 0, 0, 0;
+                 0, -backward(3), forward(3)+backward(3), -forward(3), 0, 0;
+                 0, 0, -backward(4), forward(4)+backward(4), -forward(4), 0;
+                 0, 0, 0, -backward(5), forward(5)+backward(5), -forward(5);
+                 0, 0, 0, 0, -backward(6), forward(6)+backward(6), ]
      
      %check stability of system
      eig(A)
